@@ -225,21 +225,40 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-8">
-                <div id="containerEvolucaoSaldo" class="glass-card rounded-2xl p-5 sm:p-6 min-w-0 w-full hidden animate-fade-in">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-8">
+                
+                <div class="glass-card rounded-2xl p-5 sm:p-6 min-w-0 w-full animate-fade-in lg:col-span-1 flex flex-col">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">⏱️</span>
+                            <h3 class="text-lg font-display font-bold">Saúde Financeira</h3>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Score</span>
+                    </div>
+                    <div class="flex-1 flex flex-col justify-center">
+                        <div style="position: relative; height: 140px; width: 100%;">
+                            <canvas id="gaugeSaudeChart"></canvas>
+                        </div>
+                        <div class="text-center mt-3">
+                            <span id="txt-saude-status" class="text-xs font-bold px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">Analisando...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="containerEvolucaoSaldo" class="glass-card rounded-2xl p-5 sm:p-6 min-w-0 w-full hidden animate-fade-in lg:col-span-1">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-lg font-display font-bold">Crescimento do Saldo</h3>
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">MoM Análise</span>
                     </div>
-                    <div class="flex flex-col gap-5 mt-2">
+                    <div class="flex flex-col gap-4 mt-2">
                         <div class="flex justify-between items-end">
                             <div>
                                 <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Mês Atual (<span id="lbl-mes-atual"></span>)</p>
-                                <p class="text-2xl sm:text-3xl font-display font-bold text-slate-800 dark:text-white truncate" id="val-saldo-atual">R$ 0,00</p>
+                                <p class="text-2xl font-display font-bold text-slate-800 dark:text-white truncate" id="val-saldo-atual">R$ 0,00</p>
                             </div>
                             <div class="text-right">
                                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Mês Anterior (<span id="lbl-mes-anterior"></span>)</p>
-                                <p class="text-lg sm:text-xl font-medium text-slate-400 truncate" id="val-saldo-anterior">R$ 0,00</p>
+                                <p class="text-lg font-medium text-slate-400 truncate" id="val-saldo-anterior">R$ 0,00</p>
                             </div>
                         </div>
                         <div class="h-px w-full bg-slate-100 dark:bg-slate-800"></div>
@@ -247,21 +266,21 @@
                             <span class="text-sm font-bold text-slate-600 dark:text-slate-300">Variação Líquida</span>
                             <div class="flex items-center gap-3">
                                 <span class="text-base font-black" id="val-variacao-rs">R$ 0,00</span>
-                                <span class="text-xs font-bold px-2.5 py-1 rounded-md" id="badge-variacao-pct">0%</span>
+                                <span class="text-xs font-bold px-2 py-1 rounded-md" id="badge-variacao-pct">0%</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="containerProjetos" class="glass-card rounded-2xl p-5 sm:p-6 min-w-0 w-full hidden animate-fade-in">
-                    <div class="flex items-center justify-between mb-5">
+                <div id="containerProjetos" class="glass-card rounded-2xl p-5 sm:p-6 min-w-0 w-full hidden animate-fade-in lg:col-span-1 flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2">
                             <span class="text-lg">📌</span>
                             <h3 class="text-lg font-display font-bold">Projetos Especiais</h3>
                         </div>
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tags</span>
                     </div>
-                    <div id="listaProjetos" class="space-y-3 max-h-[160px] overflow-y-auto custom-scrollbar pr-2">
+                    <div id="listaProjetos" class="space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-2 max-h-[180px]">
                         </div>
                 </div>
             </div>
@@ -495,11 +514,11 @@
         let saldoChartInstance = null; let despesasChartInstance = null; let entradasSaidasChartInstance = null;
         let saldoProjecaoChartInstance = null; let despesasProjecaoChartInstance = null; let receitasDespesasProjecaoChartInstance = null;
         let saldoConsolidadoChartInstance = null; let despesasConsolidadoChartInstance = null; let receitasDespesasConsolidadoChartInstance = null;
-        
+        let gaugeSaudeChartInstance = null;
+
         let transacoesGlobais = []; let transacoesProjetadas = [];
         let mesAtualFiltro = 'Todos'; let anoProjecaoFiltro = '2026'; let mesProjecaoFiltro = '';
-        let metasOrcamento = JSON.parse(localStorage.getItem('metasOrcamento') || '{}');
-        let gastosPorCategoria = {}; let abaSelecionada = 'real';
+        let abaSelecionada = 'real';
 
         const nomesDosMeses = {
             "01": "Jan", "02": "Fev", "03": "Mar", "04": "Abr", "05": "Mai", "06": "Jun",
@@ -573,7 +592,16 @@
 
         const btnToggleDarkMode = document.getElementById('btnToggleDarkMode');
         if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
-        btnToggleDarkMode.addEventListener('click', () => { document.body.classList.toggle('dark-mode'); localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); });
+        btnToggleDarkMode.addEventListener('click', () => { 
+            document.body.classList.toggle('dark-mode'); 
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); 
+            if(gaugeSaudeChartInstance) gaugeSaudeChartInstance.update();
+        });
+
+        document.getElementById('btnExportarPDF').addEventListener('click', () => {
+            const element = document.querySelector('main');
+            html2pdf().set({ margin: 10, filename: `relatorio.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' } }).from(element).save();
+        });
 
         // ========================================
         // UTILITÁRIOS
@@ -602,6 +630,43 @@
             let mLong = strVal.match(/(\d{1,2})\s+de\s+([a-zA-ZçÇ]+)\s+de\s+(\d{4})/i); if (mLong) { let mN = conversorMesGlobal[mLong[2].toLowerCase()]; if (mN) return `${mLong[1].padStart(2, '0')}/${mN}/${mLong[3]}`; }
             let mBR = strVal.match(/^(\d{2})\/(\d{2})\/(\d{4})/); if (mBR) return `${mBR[1]}/${mBR[2]}/${mBR[3]}`;
             return strVal.includes('/') ? strVal.substring(0, 10) : strVal;
+        }
+
+        // ========================================
+        // IMPORTAÇÃO MANUAL
+        // ========================================
+        document.getElementById('arquivoInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            mostrarStatus("Processando arquivo local...", "sucesso");
+            const leitorAssinatura = new FileReader();
+            leitorAssinatura.onload = function(e) {
+                const arr = new Uint8Array(e.target.result);
+                const isRealExcel = (arr[0] === 80 && arr[1] === 75) || (arr[0] === 208 && arr[1] === 207);
+                if (isRealExcel) lerComoExcel(file); else lerComoTexto(file);
+            };
+            leitorAssinatura.readAsArrayBuffer(file.slice(0, 4));
+        });
+
+        function lerComoTexto(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) { Papa.parse(e.target.result, { complete: function(results) { processarMatriz(results.data); }, skipEmptyLines: true }); };
+            reader.readAsText(file, 'ISO-8859-1');
+        }
+
+        function lerComoExcel(file) {
+            const reader = new FileReader();
+            reader.onerror = function() { mostrarStatus('Erro ao ler o arquivo.', 'erro'); };
+            reader.onload = function(e) {
+                try {
+                    const workbook = XLSX.read(new Uint8Array(e.target.result), {type: 'array'});
+                    const nomeAbaReal = workbook.SheetNames.find(name => name.includes('Extrato'));
+                    if (nomeAbaReal) processarMatriz(XLSX.utils.sheet_to_json(workbook.Sheets[nomeAbaReal], {header: 1, defval: ""}));
+                    const nomeAbaProjetado = workbook.SheetNames.find(name => name.includes('Projetado'));
+                    if (nomeAbaProjetado) processarProjecoes(XLSX.utils.sheet_to_json(workbook.Sheets[nomeAbaProjetado], {header: 1, defval: ""}));
+                } catch (erro) { mostrarStatus('Erro: ' + erro.message, 'erro'); }
+            };
+            reader.readAsArrayBuffer(file);
         }
 
         // ========================================
@@ -691,7 +756,7 @@
         }
 
         // ========================================
-        // ATUALIZAÇÃO DADOS REAIS + (MoM, Saldo Crescimento, Tags)
+        // ATUALIZAÇÃO DADOS REAIS + (Velocímetro, MoM, Tags)
         // ========================================
         function montarFiltrosDeMes(lista) {
             const cont = document.getElementById('containerFiltros'); const box = document.getElementById('botoesMeses'); box.innerHTML = '';
@@ -709,6 +774,64 @@
             return b;
         }
 
+        function renderizarGaugeSaude(pct) {
+            const ctx = document.getElementById('gaugeSaudeChart').getContext('2d');
+            if (gaugeSaudeChartInstance) gaugeSaudeChartInstance.destroy();
+
+            let cor = '#10b981'; 
+            let status = "Tranquilo (Saudável)";
+            if (pct > 50 && pct <= 80) { cor = '#f59e0b'; status = "Atenção (Moderado)"; } 
+            else if (pct > 80) { cor = '#ef4444'; status = "Alerta (Alto Comprometimento)"; }
+            if(pct === 0) status = "Sem saídas";
+
+            const statusEl = document.getElementById('txt-saude-status');
+            statusEl.innerText = status;
+
+            let gaugeValue = Math.min(pct, 100);
+            const isDark = document.body.classList.contains('dark-mode');
+
+            gaugeSaudeChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [gaugeValue, Math.max(100 - gaugeValue, 0)],
+                        backgroundColor: [cor, isDark ? '#334155' : '#e2e8f0'],
+                        borderWidth: 0,
+                        cutout: '80%',
+                        circumference: 180,
+                        rotation: -90
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { tooltip: { enabled: false }, legend: { display: false }, datalabels: { display: false } }
+                },
+                plugins: [{
+                    id: 'textCenter',
+                    beforeDraw: function(chart) {
+                        var width = chart.width, height = chart.height, ctx = chart.ctx;
+                        ctx.restore();
+                        var fontSize = (height / 3.5).toFixed(2);
+                        ctx.font = "bold " + fontSize + "px 'Sora', sans-serif";
+                        ctx.textBaseline = "middle";
+                        ctx.fillStyle = document.body.classList.contains('dark-mode') ? '#f1f5f9' : '#1e293b';
+                        var text = pct.toFixed(0) + "%",
+                            textX = Math.round((width - ctx.measureText(text).width) / 2),
+                            textY = height - (height * 0.15);
+                        ctx.fillText(text, textX, textY);
+                        
+                        ctx.font = "600 " + (fontSize * 0.25) + "px 'Inter', sans-serif";
+                        ctx.fillStyle = '#64748b';
+                        var text2 = "Gasto da Receita";
+                        var text2X = Math.round((width - ctx.measureText(text2).width) / 2);
+                        ctx.fillText(text2, text2X, textY + (height * 0.22));
+                        ctx.save();
+                    }
+                }]
+            });
+        }
+
         function atualizarDashboard(mes) {
             let dados = mes === 'Todos' ? transacoesGlobais : transacoesGlobais.filter(t => t.mesAno === mes);
             let totE = 0, totS = 0; gastosPorCategoria = {};
@@ -720,7 +843,11 @@
             const bEl = document.getElementById('kpi-balanco'); bEl.innerText = `R$ ${bal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             bEl.className = `text-2xl sm:text-3xl font-display font-bold mt-1 truncate ${bal >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`;
 
-            // --- INTELIGÊNCIA 1: Análise MoM e Painel Crescimento do Saldo ---
+            // VELOCÍMETRO
+            let pctComprometido = totE > 0 ? (totS / totE) * 100 : (totS > 0 ? 100 : 0);
+            renderizarGaugeSaude(pctComprometido);
+
+            // MoM E CRESCIMENTO DE SALDO
             const mUnicos = Array.from(new Set(transacoesGlobais.map(t => t.mesAno))).sort((a, b) => { const pA = a.split('/'); const pB = b.split('/'); return (pA[1]+pA[0]).localeCompare(pB[1]+pB[0]); });
             const cEvolucao = document.getElementById('containerEvolucaoSaldo');
 
@@ -732,7 +859,6 @@
                     let eA = 0, sA = 0; dAnt.forEach(t => { eA += t.valorEntrada; sA += t.valorSaida; });
                     let balA = eA - sA;
 
-                    // Atualiza Badges Superiores
                     const updateBadge = (id, atual, ant, invert) => {
                         const bg = document.getElementById(id); if (ant === 0) { bg.classList.add('hidden'); return; }
                         const pct = ((atual - ant) / Math.abs(ant)) * 100; bg.classList.remove('hidden');
@@ -741,28 +867,22 @@
                     };
                     updateBadge('mom-entradas', totE, eA, false); updateBadge('mom-saidas', totS, sA, true); updateBadge('mom-balanco', bal, balA, false);
 
-                    // Atualiza Novo Painel de Evolução do Saldo
                     cEvolucao.classList.remove('hidden');
-                    
                     const formatarLblMes = (mStr) => { let p = mStr.split('/'); return nomesDosMeses[p[0]] ? `${nomesDosMeses[p[0]]}/${p[1].substring(2)}` : mStr; };
                     document.getElementById('lbl-mes-atual').innerText = formatarLblMes(mes);
                     document.getElementById('lbl-mes-anterior').innerText = formatarLblMes(mesAnterior);
-                    
                     document.getElementById('val-saldo-atual').innerText = `R$ ${bal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
                     document.getElementById('val-saldo-anterior').innerText = `R$ ${balA.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
 
                     const diff = bal - balA;
                     const pct = balA !== 0 ? (diff / Math.abs(balA)) * 100 : (bal > 0 ? 100 : (bal < 0 ? -100 : 0));
-                    
                     const varRsEl = document.getElementById('val-variacao-rs');
                     const varPctEl = document.getElementById('badge-variacao-pct');
                     
                     varRsEl.innerText = `${diff >= 0 ? '+' : ''} R$ ${diff.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
                     varRsEl.className = `text-base font-black ${diff >= 0 ? 'text-emerald-500' : 'text-rose-500'}`;
-                    
                     varPctEl.innerText = `${diff >= 0 ? '↑' : '↓'} ${Math.abs(pct).toFixed(1)}%`;
                     varPctEl.className = `text-xs font-bold px-2.5 py-1 rounded-md ${diff >= 0 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400'}`;
-
                 } else { 
                     ['mom-entradas', 'mom-saidas', 'mom-balanco'].forEach(id => document.getElementById(id).classList.add('hidden')); 
                     cEvolucao.classList.add('hidden');
@@ -772,7 +892,7 @@
                 cEvolucao.classList.add('hidden');
             }
 
-            // --- INTELIGÊNCIA 2: Centro de Custos (Tags) ---
+            // Projetos Especiais (Tags)
             const cProj = document.getElementById('containerProjetos'); const lProj = document.getElementById('listaProjetos');
             let projetos = {};
             dados.forEach(t => { if (t.isSaida && t.descricao) { const tags = t.descricao.match(/#[\w\u00C0-\u017F]+/gi); if (tags) { tags.forEach(tag => { const tg = tag.toUpperCase(); projetos[tg] = (projetos[tg] || 0) + t.valorSaida; }); } } });
