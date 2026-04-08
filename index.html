@@ -101,26 +101,16 @@
         
         .chart-container { position: relative; height: 300px; width: 100%; }
 
-        .budget-bar { height: 6px; background: var(--border-color); border-radius: 999px; overflow: hidden; }
-        .budget-bar-fill { height: 100%; border-radius: 999px; transition: width 0.3s ease; }
-
         .recurring-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: #fef3c7; color: #92400e; }
         body.dark-mode .recurring-badge { background: #78350f; color: #fcd34d; }
 
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-overlay.active { display: flex; }
-        .modal-content { background: var(--bg-secondary); border-radius: 16px; padding: 32px; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
-
-        nav { background: var(--bg-secondary); border-bottom-color: var(--border-color); }
-        body.dark-mode nav { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
+        .projection-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: #dbeafe; color: #1e40af; }
+        body.dark-mode .projection-badge { background: #1e3a8a; color: #93c5fd; }
 
         .tab-button { padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: all 0.3s; cursor: pointer; border: 1px solid transparent; }
         .tab-button.active { background: #0c91eb; color: white; }
         .tab-button.inactive { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); }
         .tab-button.inactive:hover { border-color: #0c91eb; color: #0c91eb; }
-
-        .projection-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: #dbeafe; color: #1e40af; }
-        body.dark-mode .projection-badge { background: #1e3a8a; color: #93c5fd; }
         
         .bottom-nav-safe { padding-bottom: calc(0.5rem + env(safe-area-inset-bottom)); }
     </style>
@@ -236,37 +226,28 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-8">
-                <div id="container503020" class="glass-card rounded-2xl p-5 sm:p-6 min-w-0 w-full hidden animate-fade-in">
-                    <div class="flex items-center justify-between mb-5">
-                        <h3 class="text-lg font-display font-bold">Termómetro 50/30/20</h3>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Saúde Mensal</span>
+                <div id="containerEvolucaoSaldo" class="glass-card rounded-2xl p-5 sm:p-6 min-w-0 w-full hidden animate-fade-in">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-display font-bold">Crescimento do Saldo</h3>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">MoM Análise</span>
                     </div>
-                    <div class="space-y-4">
-                        <div>
-                            <div class="flex justify-between text-xs mb-1">
-                                <span class="font-bold text-slate-600 dark:text-slate-300">Necessidades (Alvo: 50%)</span>
-                                <span class="font-bold text-slate-500" id="val-nec">R$ 0 (0%)</span>
+                    <div class="flex flex-col gap-5 mt-2">
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Mês Atual (<span id="lbl-mes-atual"></span>)</p>
+                                <p class="text-2xl sm:text-3xl font-display font-bold text-slate-800 dark:text-white truncate" id="val-saldo-atual">R$ 0,00</p>
                             </div>
-                            <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                <div id="bar-nec" class="h-full bg-emerald-500 rounded-full transition-all" style="width: 0%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-xs mb-1">
-                                <span class="font-bold text-slate-600 dark:text-slate-300">Desejos & Lazer (Alvo: 30%)</span>
-                                <span class="font-bold text-slate-500" id="val-des">R$ 0 (0%)</span>
-                            </div>
-                            <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                <div id="bar-des" class="h-full bg-emerald-500 rounded-full transition-all" style="width: 0%"></div>
+                            <div class="text-right">
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Mês Anterior (<span id="lbl-mes-anterior"></span>)</p>
+                                <p class="text-lg sm:text-xl font-medium text-slate-400 truncate" id="val-saldo-anterior">R$ 0,00</p>
                             </div>
                         </div>
-                        <div>
-                            <div class="flex justify-between text-xs mb-1">
-                                <span class="font-bold text-slate-600 dark:text-slate-300">Livre / Poupança (Alvo: 20%)</span>
-                                <span class="font-bold text-slate-500" id="val-poup">R$ 0 (0%)</span>
-                            </div>
-                            <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                <div id="bar-poup" class="h-full bg-emerald-500 rounded-full transition-all" style="width: 0%"></div>
+                        <div class="h-px w-full bg-slate-100 dark:bg-slate-800"></div>
+                        <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl">
+                            <span class="text-sm font-bold text-slate-600 dark:text-slate-300">Variação Líquida</span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-base font-black" id="val-variacao-rs">R$ 0,00</span>
+                                <span class="text-xs font-bold px-2.5 py-1 rounded-md" id="badge-variacao-pct">0%</span>
                             </div>
                         </div>
                     </div>
@@ -288,7 +269,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-8">
                 <div class="glass-card rounded-2xl p-5 sm:p-6 min-w-0 w-full">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-lg font-display font-bold" id="tituloGraficoSaldo">Evolução do Saldo</h3>
+                        <h3 class="text-lg font-display font-bold" id="tituloGraficoSaldo">Evolução Histórica</h3>
                         <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Temporal</div>
                     </div>
                     <div class="chart-container"><canvas id="saldoChart"></canvas></div>
@@ -537,14 +518,6 @@
             'Moradia': '#3b82f6', 'Empregada': '#8b5cf6', 'Cartão de Crédito': '#ef4444', 'Salário': '#10b981', 'Financiamento': '#f59e0b'
         };
 
-        // Mapeamento para a Regra 50/30/20
-        const map503020 = {
-            '🏠 Moradia & Contas': 'necessidades', '🚗 Transporte & Veículo': 'necessidades', '👶 Filhos, Babá & Educação': 'necessidades',
-            'Moradia': 'necessidades', 'Empregada': 'necessidades', 'Financiamento': 'necessidades',
-            '🍔 Alimentação & Lazer': 'desejos', '🛍️ Compras & Assinaturas': 'desejos', '📦 Outros Gastos': 'desejos', '🔄 Outros PIX e Transf.': 'desejos',
-            '💳 Financeiro & Cartões': 'poupanca_dividas', 'Cartão de Crédito': 'poupanca_dividas'
-        };
-
         // ========================================
         // FETCH DO GOOGLE SHEETS
         // ========================================
@@ -718,7 +691,7 @@
         }
 
         // ========================================
-        // ATUALIZAÇÃO DADOS REAIS + (MoM, 50/30/20, Tags)
+        // ATUALIZAÇÃO DADOS REAIS + (MoM, Saldo Crescimento, Tags)
         // ========================================
         function montarFiltrosDeMes(lista) {
             const cont = document.getElementById('containerFiltros'); const box = document.getElementById('botoesMeses'); box.innerHTML = '';
@@ -731,7 +704,7 @@
 
         function criarBotaoMes(val, txt) {
             const b = document.createElement('button'); b.innerText = txt;
-            b.className = `px-5 py-2.5 rounded-xl text-sm sm:text-xs font-bold whitespace-nowrap transition-all border ${mesAtualFiltro === val ? 'btn-active border-brand-600' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'}`;
+            b.className = `px-5 py-2.5 rounded-xl text-sm sm:text-xs font-bold whitespace-nowrap transition-all border ${mesAtualFiltro === val ? 'btn-active border-brand-600' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-brand-300 hover:text-brand-600'}`;
             b.onclick = () => { mesAtualFiltro = val; montarFiltrosDeMes(Array.from(new Set(transacoesGlobais.map(t => t.mesAno)))); atualizarDashboard(mesAtualFiltro); };
             return b;
         }
@@ -747,43 +720,59 @@
             const bEl = document.getElementById('kpi-balanco'); bEl.innerText = `R$ ${bal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             bEl.className = `text-2xl sm:text-3xl font-display font-bold mt-1 truncate ${bal >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`;
 
-            // --- INTELIGÊNCIA 1: Análise MoM ---
+            // --- INTELIGÊNCIA 1: Análise MoM e Painel Crescimento do Saldo ---
             const mUnicos = Array.from(new Set(transacoesGlobais.map(t => t.mesAno))).sort((a, b) => { const pA = a.split('/'); const pB = b.split('/'); return (pA[1]+pA[0]).localeCompare(pB[1]+pB[0]); });
+            const cEvolucao = document.getElementById('containerEvolucaoSaldo');
+
             if (mes !== 'Todos') {
                 const idx = mUnicos.indexOf(mes);
                 if (idx > 0) {
-                    const dAnt = transacoesGlobais.filter(t => t.mesAno === mUnicos[idx - 1]);
+                    const mesAnterior = mUnicos[idx - 1];
+                    const dAnt = transacoesGlobais.filter(t => t.mesAno === mesAnterior);
                     let eA = 0, sA = 0; dAnt.forEach(t => { eA += t.valorEntrada; sA += t.valorSaida; });
+                    let balA = eA - sA;
+
+                    // Atualiza Badges Superiores
                     const updateBadge = (id, atual, ant, invert) => {
                         const bg = document.getElementById(id); if (ant === 0) { bg.classList.add('hidden'); return; }
                         const pct = ((atual - ant) / Math.abs(ant)) * 100; bg.classList.remove('hidden');
                         let c = invert ? (pct > 0 ? 'bg-rose-100 text-rose-600 dark:bg-rose-900/50 dark:text-rose-400' : 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400') : (pct > 0 ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400' : 'bg-rose-100 text-rose-600 dark:bg-rose-900/50 dark:text-rose-400');
                         bg.className = `text-[10px] font-bold px-2 py-0.5 rounded-full ml-2 ${c}`; bg.innerText = `${pct >= 0 ? '↑' : '↓'} ${Math.abs(pct).toFixed(1)}%`;
                     };
-                    updateBadge('mom-entradas', totE, eA, false); updateBadge('mom-saidas', totS, sA, true); updateBadge('mom-balanco', bal, eA - sA, false);
-                } else { ['mom-entradas', 'mom-saidas', 'mom-balanco'].forEach(id => document.getElementById(id).classList.add('hidden')); }
-            } else { ['mom-entradas', 'mom-saidas', 'mom-balanco'].forEach(id => document.getElementById(id).classList.add('hidden')); }
+                    updateBadge('mom-entradas', totE, eA, false); updateBadge('mom-saidas', totS, sA, true); updateBadge('mom-balanco', bal, balA, false);
 
-            // --- INTELIGÊNCIA 2: Regra 50/30/20 ---
-            const c50 = document.getElementById('container503020');
-            if (totE > 0 && mes !== 'Todos') {
-                c50.classList.remove('hidden');
-                let nec = 0, des = 0;
-                Object.entries(gastosPorCategoria).forEach(([c, v]) => { const t = map503020[c] || 'desejos'; if (t === 'necessidades') nec += v; else if (t === 'desejos') des += v; });
-                const poup = totE - nec - des;
-                const pN = (nec/totE)*100, pD = (des/totE)*100, pP = (poup/totE)*100;
-                
-                document.getElementById('bar-nec').style.width = `${Math.min(pN, 100)}%`; document.getElementById('bar-des').style.width = `${Math.min(pD, 100)}%`; document.getElementById('bar-poup').style.width = `${Math.max(Math.min(pP, 100), 0)}%`;
-                document.getElementById('bar-nec').className = `h-full rounded-full transition-all ${pN <= 50 ? 'bg-emerald-500' : 'bg-rose-500'}`;
-                document.getElementById('bar-des').className = `h-full rounded-full transition-all ${pD <= 30 ? 'bg-emerald-500' : 'bg-rose-500'}`;
-                document.getElementById('bar-poup').className = `h-full rounded-full transition-all ${pP >= 20 ? 'bg-emerald-500' : (pP > 0 ? 'bg-amber-500' : 'bg-rose-500')}`;
-                
-                document.getElementById('val-nec').innerText = `R$ ${nec.toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${pN.toFixed(1)}%)`;
-                document.getElementById('val-des').innerText = `R$ ${des.toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${pD.toFixed(1)}%)`;
-                document.getElementById('val-poup').innerText = `R$ ${poup.toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${pP.toFixed(1)}%)`;
-            } else { c50.classList.add('hidden'); }
+                    // Atualiza Novo Painel de Evolução do Saldo
+                    cEvolucao.classList.remove('hidden');
+                    
+                    const formatarLblMes = (mStr) => { let p = mStr.split('/'); return nomesDosMeses[p[0]] ? `${nomesDosMeses[p[0]]}/${p[1].substring(2)}` : mStr; };
+                    document.getElementById('lbl-mes-atual').innerText = formatarLblMes(mes);
+                    document.getElementById('lbl-mes-anterior').innerText = formatarLblMes(mesAnterior);
+                    
+                    document.getElementById('val-saldo-atual').innerText = `R$ ${bal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                    document.getElementById('val-saldo-anterior').innerText = `R$ ${balA.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
 
-            // --- INTELIGÊNCIA 3: Centro de Custos (Tags) ---
+                    const diff = bal - balA;
+                    const pct = balA !== 0 ? (diff / Math.abs(balA)) * 100 : (bal > 0 ? 100 : (bal < 0 ? -100 : 0));
+                    
+                    const varRsEl = document.getElementById('val-variacao-rs');
+                    const varPctEl = document.getElementById('badge-variacao-pct');
+                    
+                    varRsEl.innerText = `${diff >= 0 ? '+' : ''} R$ ${diff.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                    varRsEl.className = `text-base font-black ${diff >= 0 ? 'text-emerald-500' : 'text-rose-500'}`;
+                    
+                    varPctEl.innerText = `${diff >= 0 ? '↑' : '↓'} ${Math.abs(pct).toFixed(1)}%`;
+                    varPctEl.className = `text-xs font-bold px-2.5 py-1 rounded-md ${diff >= 0 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400'}`;
+
+                } else { 
+                    ['mom-entradas', 'mom-saidas', 'mom-balanco'].forEach(id => document.getElementById(id).classList.add('hidden')); 
+                    cEvolucao.classList.add('hidden');
+                }
+            } else { 
+                ['mom-entradas', 'mom-saidas', 'mom-balanco'].forEach(id => document.getElementById(id).classList.add('hidden')); 
+                cEvolucao.classList.add('hidden');
+            }
+
+            // --- INTELIGÊNCIA 2: Centro de Custos (Tags) ---
             const cProj = document.getElementById('containerProjetos'); const lProj = document.getElementById('listaProjetos');
             let projetos = {};
             dados.forEach(t => { if (t.isSaida && t.descricao) { const tags = t.descricao.match(/#[\w\u00C0-\u017F]+/gi); if (tags) { tags.forEach(tag => { const tg = tag.toUpperCase(); projetos[tg] = (projetos[tg] || 0) + t.valorSaida; }); } } });
@@ -808,7 +797,7 @@
         function renderizarGraficoSaldo(labels, data) {
             const ctx = document.getElementById('saldoChart').getContext('2d'); if (saldoChartInstance) saldoChartInstance.destroy();
             const grad = ctx.createLinearGradient(0, 0, 0, 300); grad.addColorStop(0, 'rgba(12, 145, 235, 0.2)'); grad.addColorStop(1, 'rgba(12, 145, 235, 0)');
-            saldoChartInstance = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: 'Saldo', data: data, borderColor: '#0c91eb', backgroundColor: grad, borderWidth: 3, fill: true, tension: 0.4, pointRadius: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { display: false }, ticks: { callback: v => 'R$ ' + v.toLocaleString('pt-BR') } }, x: { grid: { display: false } } } } });
+            saldoChartInstance = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: 'Saldo', data: data, borderColor: '#0c91eb', backgroundColor: grad, borderWidth: 3, fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 6, pointHoverBackgroundColor: '#0c91eb' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { display: false }, ticks: { callback: v => 'R$ ' + v.toLocaleString('pt-BR') } }, x: { grid: { display: false } } } } });
         }
 
         function renderizarGraficoDespesas(categorias) {
@@ -843,7 +832,7 @@
             }
 
             ord.forEach(t => {
-                const tr = document.createElement('tr'); tr.className = "hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors";
+                const tr = document.createElement('tr'); tr.className = "hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors group";
                 tr.innerHTML = `<td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-slate-500 dark:text-slate-400">${t.dataStr}</td><td class="px-6 py-4 text-sm font-semibold text-slate-700 dark:text-slate-300 truncate max-w-[200px]">${t.descricao}</td><td class="px-6 py-4"><span class="text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider" style="background-color: ${coresCategorias[t.categoria]}15; color: ${coresCategorias[t.categoria]}">${t.categoria}</span></td><td class="px-6 py-4 text-right whitespace-nowrap"><span class="text-sm font-bold ${t.isSaida ? 'text-rose-500' : 'text-emerald-500'}">${t.isSaida ? '-' : '+'} R$ ${t.valorAbsoluto.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span></td>`;
                 tBody.appendChild(tr);
 
@@ -932,7 +921,7 @@
             let sAc = 0; const sMap = {};
             ord.forEach(t => { const d = (t.dataStr || t.data).substring(0, 5); if (!sMap[d]) sMap[d] = 0; if (t.valorEntrada) sAc += t.valorEntrada; if (t.valorSaida) sAc -= t.valorSaida; if (t.valor) { if (t.isReceita) sAc += t.valor; if (t.isDespesa) sAc -= t.valor; } sMap[d] = sAc; });
             const grad = ctx.createLinearGradient(0, 0, 0, 300); grad.addColorStop(0, 'rgba(12, 145, 235, 0.2)'); grad.addColorStop(1, 'rgba(12, 145, 235, 0)');
-            saldoConsolidadoChartInstance = new Chart(ctx, { type: 'line', data: { labels: Object.keys(sMap), datasets: [{ label: 'Saldo', data: Object.values(sMap), borderColor: '#0c91eb', backgroundColor: grad, borderWidth: 3, fill: true, tension: 0.4, pointRadius: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { display: false }, ticks: { callback: v => 'R$ ' + v.toLocaleString('pt-BR') } }, x: { grid: { display: false } } } } });
+            saldoConsolidadoChartInstance = new Chart(ctx, { type: 'line', data: { labels: Object.keys(sMap), datasets: [{ label: 'Saldo Consolidado', data: Object.values(sMap), borderColor: '#0c91eb', backgroundColor: grad, borderWidth: 3, fill: true, tension: 0.4, pointRadius: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { display: false }, ticks: { callback: v => 'R$ ' + v.toLocaleString('pt-BR') } }, x: { grid: { display: false } } } } });
         }
 
         function renderGrafConsDesp(cat) {
